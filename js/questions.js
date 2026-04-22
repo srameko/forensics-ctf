@@ -49,6 +49,14 @@ export const MODULES = [
         hintText: 'https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventID=4625',
         points: 10,
       },
+      {
+        id: 'splunk_5',
+        text: 'When was the host compromised?',
+        answerBase64: 'MjAyNS0wMy0yMA==', // 2025-03-20
+        formatHint: 'YYYY-MM-DD',
+        hintText: '',
+        points: 10,
+      },
     ],
   },
   {
