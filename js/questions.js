@@ -41,6 +41,14 @@ export const MODULES = [
         hintText: 'Seřaď události podle času a hledej přechod z EventID 4625 na 4624 u stejné IP.',
         points: 10,
       },
+      {
+        id: 'splunk_4',
+        text: 'What is EventId 4625?',
+        answerBase64: 'QW4gYWNjb3VudCBmYWlsZWQgdG8gbG9nIG9u', // An account failed to log on
+        formatHint: 'např. An account ...',
+        hintText: 'https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventID=4625',
+        points: 10,
+      },
     ],
   },
   {
