@@ -57,6 +57,14 @@ export const MODULES = [
         hintText: '',
         points: 10,
       },
+      {
+        id: 'splunk_6',
+        text: 'How do we call the attack, when passwords (of a user) are being guessed?',
+        answerBase64: 'RGljdGlvbmFyeSBhdHRhY2s=', // Dictionary attack
+        formatHint: 'např. Brute force attack',
+        hintText: 'Adversary is using known words in a list...',
+        points: 10,
+      },
     ],
   },
   {
