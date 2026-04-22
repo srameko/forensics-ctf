@@ -73,13 +73,20 @@ function showModuleSelect() {
     const done = session.completed.includes(mod.id);
     const score = done ? computeModuleScore(session, mod) : null;
     const max = computeModuleMaxScore(mod);
+    const answeredCount = mod.questions.filter((q) => {
+      const qs = getQuestionState(session, q.id);
+      return qs.score !== null || qs.failed;
+    }).length;
+    const inProgress = !done && answeredCount > 0;
 
     const btn = document.createElement('button');
-    btn.className = 'module-btn' + (done ? ' module-btn--done' : '');
+    btn.className = 'module-btn' + (done ? ' module-btn--done' : inProgress ? ' module-btn--inprogress' : '');
     btn.disabled = done;
     btn.innerHTML = `
       <span class="module-title">${esc(mod.title)}</span>
-      ${done ? `<span class="module-score">${score} / ${max} points ✓</span>` : `<span class="module-questions">${mod.questions.length} questions</span>`}
+      ${done       ? `<span class="module-score">${score} / ${max} points ✓</span>`
+        : inProgress ? `<span class="module-progress">${answeredCount} / ${mod.questions.length} answered</span>`
+        :              `<span class="module-questions">${mod.questions.length} questions</span>`}
     `;
     if (!done) btn.addEventListener('click', () => startModule(mod.id));
     list.appendChild(btn);
@@ -104,7 +111,13 @@ let currentQuestionIndex = 0;
 
 function startModule(moduleId) {
   currentModuleId = moduleId;
-  currentQuestionIndex = 0;
+  const session = loadSession();
+  const mod = MODULES.find((m) => m.id === moduleId);
+  const resumeIndex = mod.questions.findIndex((q) => {
+    const qs = getQuestionState(session, q.id);
+    return qs.score === null && !qs.failed;
+  });
+  currentQuestionIndex = resumeIndex === -1 ? 0 : resumeIndex;
   showQuestion();
 }
 
@@ -221,6 +234,10 @@ function advanceQuestion(session, mod) {
     showQuestion();
   }
 }
+
+document.getElementById('btn-back-to-menu').addEventListener('click', () => {
+  showModuleSelect();
+});
 
 document.getElementById('btn-hint').addEventListener('click', () => {
   let session = loadSession();
