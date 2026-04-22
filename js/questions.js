@@ -37,7 +37,7 @@ export const MODULES = [
         id: 'theory_3',
         text: 'How do you defang the IP address 8.8.8.8?',
         answerBase64: 'OFsuXThbLl04Wy5dOA==', // 8[.]8[.]8[.]8
-        formatHint: 'x[.]x[.]x[.]x',
+        formatHint: '. => [.]',
         hintText: 'Replace each dot with [.]',
         points: 10,
       },
@@ -53,7 +53,7 @@ export const MODULES = [
         id: 'theory_5',
         text: 'What is the defanged form of the URL https://evil.com?',
         answerBase64: 'aHh4cHNbOi8vXWV2aWxbLl1jb20=', // hxxps[://]evil[.]com
-        formatHint: 'hxxps[://]domain[.]tld',
+        formatHint: 'https:// => hxxps[://], . => [.]',
         hintText: 'Replace "https" with "hxxps", replace "://" with "[://]", replace each dot with "[.]"',
         points: 10,
       },
