@@ -45,7 +45,7 @@ function esc(str) {
 document.getElementById('btn-start').addEventListener('click', () => {
   const nick = document.getElementById('input-nick').value.trim();
   if (!nick) {
-    showFieldError('nick-error', 'Zadej prosím svůj nick.');
+    showFieldError('nick-error', 'Please enter your nickname.');
     return;
   }
   const session = createSession(nick);
@@ -79,7 +79,7 @@ function showModuleSelect() {
     btn.disabled = done;
     btn.innerHTML = `
       <span class="module-title">${esc(mod.title)}</span>
-      ${done ? `<span class="module-score">${score} / ${max} bodů ✓</span>` : `<span class="module-questions">${mod.questions.length} otázek</span>`}
+      ${done ? `<span class="module-score">${score} / ${max} points ✓</span>` : `<span class="module-questions">${mod.questions.length} questions</span>`}
     `;
     if (!done) btn.addEventListener('click', () => startModule(mod.id));
     list.appendChild(btn);
@@ -91,7 +91,7 @@ function showModuleSelect() {
   const total = computeTotalScore(session, allModules);
   const totalMax = allModules.reduce((s, m) => s + computeModuleMaxScore(m), 0);
   totalEl.textContent = session.completed.length > 0
-    ? `Celkem: ${total} / ${totalMax} bodů`
+    ? `Total: ${total} / ${totalMax} points`
     : '';
 
   showView('view-modules');
@@ -117,9 +117,9 @@ function showQuestion() {
 
   document.getElementById('question-module-title').textContent = mod.title;
   document.getElementById('question-number').textContent =
-    `Otázka ${currentQuestionIndex + 1} / ${mod.questions.length}`;
+    `Question ${currentQuestionIndex + 1} / ${mod.questions.length}`;
   document.getElementById('question-text').textContent = q.text;
-  document.getElementById('answer-format').textContent = `Formát: ${q.formatHint}`;
+  document.getElementById('answer-format').textContent = `Format: ${q.formatHint}`;
   document.getElementById('answer-input').value = '';
   document.getElementById('answer-input').disabled = false;
   document.getElementById('btn-submit').disabled = false;
@@ -131,18 +131,18 @@ function showQuestion() {
   // Hint button
   const hintBtn = document.getElementById('btn-hint');
   if (qs.hintUsed) {
-    hintBtn.textContent = 'Nápověda použita';
+    hintBtn.textContent = 'Hint used';
     hintBtn.disabled = true;
     document.getElementById('hint-text-content').textContent = q.hintText;
     document.getElementById('hint-box').hidden = false;
   } else {
     const penalty = getHintPenalty(q.points);
-    hintBtn.textContent = `Nápověda (−${penalty} bodů)`;
+    hintBtn.textContent = `Hint (−${penalty} points)`;
     hintBtn.disabled = false;
   }
 
   document.getElementById('attempts-remaining').textContent =
-    `Zbývající pokusy: ${remaining}`;
+    `Attempts remaining: ${remaining}`;
 
   // Progress bar
   const pct = (currentQuestionIndex / mod.questions.length) * 100;
@@ -175,7 +175,7 @@ function submitAnswer() {
     session = recordCorrectAnswer(session, q.id, q.points, qs.hintUsed);
     saveSession(session);
 
-    feedbackEl.textContent = `✓ Správně! +${earned} bodů`;
+    feedbackEl.textContent = `✓ Correct! +${earned} points`;
     feedbackEl.className = 'feedback feedback--correct';
     feedbackEl.hidden = false;
     document.getElementById('answer-input').disabled = true;
@@ -190,19 +190,19 @@ function submitAnswer() {
 
     if (newQs.failed) {
       const correct = atob(q.answerBase64);
-      feedbackEl.innerHTML = `✗ Nesprávně. Správná odpověď: <strong>${esc(correct)}</strong>`;
+      feedbackEl.innerHTML = `✗ Incorrect. Correct answer: <strong>${esc(correct)}</strong>`;
       feedbackEl.className = 'feedback feedback--wrong';
       feedbackEl.hidden = false;
       document.getElementById('answer-input').disabled = true;
       document.getElementById('btn-submit').disabled = true;
-      document.getElementById('attempts-remaining').textContent = 'Žádné pokusy';
+      document.getElementById('attempts-remaining').textContent = 'No attempts left';
       setTimeout(() => advanceQuestion(session, mod), 2200);
     } else {
-      feedbackEl.textContent = `✗ Nesprávně. Zbývající pokusy: ${remaining}`;
+      feedbackEl.textContent = `✗ Incorrect. Attempts remaining: ${remaining}`;
       feedbackEl.className = 'feedback feedback--wrong';
       feedbackEl.hidden = false;
       document.getElementById('attempts-remaining').textContent =
-        `Zbývající pokusy: ${remaining}`;
+        `Attempts remaining: ${remaining}`;
     }
   }
 }
@@ -231,7 +231,7 @@ document.getElementById('btn-hint').addEventListener('click', () => {
 
   const penalty = getHintPenalty(q.points);
   const confirmed = window.confirm(
-    `Zobrazit nápovědu?\nPřijdeš o ${penalty} bodů za tuto otázku.`
+    `Show hint?\nYou will lose ${penalty} points for this question.`
   );
   if (!confirmed) return;
 
@@ -239,7 +239,7 @@ document.getElementById('btn-hint').addEventListener('click', () => {
   saveSession(session);
 
   const hintBtn = document.getElementById('btn-hint');
-  hintBtn.textContent = 'Nápověda použita';
+  hintBtn.textContent = 'Hint used';
   hintBtn.disabled = true;
   document.getElementById('hint-text-content').textContent = q.hintText;
   document.getElementById('hint-box').hidden = false;
@@ -252,26 +252,26 @@ function showModuleResult(session, mod) {
   const max = computeModuleMaxScore(mod);
 
   document.getElementById('result-module-title').textContent = mod.title;
-  document.getElementById('result-score').textContent = `${score} / ${max} bodů`;
+  document.getElementById('result-score').textContent = `${score} / ${max} points`;
 
   const breakdown = document.getElementById('result-breakdown');
   breakdown.innerHTML = '';
   mod.questions.forEach((q, i) => {
     const earned = session.scores[q.id] ?? 0;
-    const hinted = session.hintsUsed[q.id] ? ' (nápověda)' : '';
+    const hinted = session.hintsUsed[q.id] ? ' (hint)' : '';
     const li = document.createElement('li');
     li.className = earned > 0 ? 'result-item--correct' : 'result-item--wrong';
-    li.textContent = `Otázka ${i + 1}: ${earned} / ${q.points} bodů${hinted}`;
+    li.textContent = `Question ${i + 1}: ${earned} / ${q.points} points${hinted}`;
     breakdown.appendChild(li);
   });
 
   const allDone = MODULES.every((m) => session.completed.includes(m.id));
   const nextBtn = document.getElementById('btn-next-module');
   if (allDone) {
-    nextBtn.textContent = 'Zobrazit výsledky →';
+    nextBtn.textContent = 'Show results →';
     nextBtn.onclick = () => showFinalScore(session);
   } else {
-    nextBtn.textContent = 'Další modul →';
+    nextBtn.textContent = 'Next module →';
     nextBtn.onclick = () => showModuleSelect();
   }
 
@@ -285,7 +285,7 @@ function showFinalScore(session) {
   const totalMax = MODULES.reduce((s, m) => s + computeModuleMaxScore(m), 0);
 
   document.getElementById('final-nick').textContent = session.nick;
-  document.getElementById('final-total').textContent = `${total} / ${totalMax} bodů`;
+  document.getElementById('final-total').textContent = `${total} / ${totalMax} points`;
 
   const breakdown = document.getElementById('final-breakdown');
   breakdown.innerHTML = '';
@@ -293,7 +293,7 @@ function showFinalScore(session) {
     const score = computeModuleScore(session, mod);
     const max = computeModuleMaxScore(mod);
     const li = document.createElement('li');
-    li.textContent = `${mod.title}: ${score} / ${max} bodů`;
+    li.textContent = `${mod.title}: ${score} / ${max} points`;
     breakdown.appendChild(li);
   });
 

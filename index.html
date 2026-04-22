@@ -20,23 +20,23 @@
       <div class="intro-hero">
         <div class="emoji">🕵️‍♀️</div>
         <h2>Forensics CTF</h2>
-        <p>Vítej na výzvě! Zadej svůj nick a otestuj, co jsi se naučila.</p>
+        <p>Welcome to the challenge! Enter your nickname and test what you have learned.</p>
       </div>
       <div class="card">
         <div class="input-group">
-          <label for="input-nick">Tvůj nick</label>
-          <input type="text" id="input-nick" placeholder="např. alice42" autocomplete="off" maxlength="30" />
+          <label for="input-nick">Your nickname</label>
+          <input type="text" id="input-nick" placeholder="e.g. alice42" autocomplete="off" maxlength="30" />
           <span id="nick-error" class="field-error" hidden></span>
         </div>
-        <button id="btn-start" class="btn btn-primary">Začít →</button>
+        <button id="btn-start" class="btn btn-primary">Start →</button>
       </div>
     </div>
 
     <!-- ── View: Module select ─────────────────────────────────────────────── -->
     <div id="view-modules" class="view">
       <div class="card">
-        <h2>Vyber modul</h2>
-        <p>Každý modul obsahuje sérii otázek. Moduly můžeš plnit v libovolném pořadí.</p>
+        <h2>Select a module</h2>
+        <p>Each module contains a series of questions. You can complete the modules in any order.</p>
         <div id="module-list"></div>
         <p id="running-total" class="running-total"></p>
       </div>
@@ -58,20 +58,20 @@
         <p class="format-hint" id="answer-format"></p>
 
         <div class="answer-row">
-          <input type="text" id="answer-input" placeholder="Tvoje odpověď…" autocomplete="off" />
-          <button id="btn-submit" class="btn btn-primary">Odeslat</button>
+          <input type="text" id="answer-input" placeholder="Your answer…" autocomplete="off" />
+          <button id="btn-submit" class="btn btn-primary">Submit</button>
         </div>
 
         <div id="feedback" class="feedback" hidden></div>
 
         <div id="hint-box" class="hint-box" hidden>
-          <strong>💡 Nápověda</strong>
+          <strong>💡 Hint</strong>
           <span id="hint-text-content"></span>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
           <span id="attempts-remaining" class="attempts-label"></span>
-          <button id="btn-hint" class="btn btn-ghost">Nápověda</button>
+          <button id="btn-hint" class="btn btn-ghost">Hint</button>
         </div>
       </div>
     </div>
@@ -90,10 +90,10 @@
     <div id="view-final" class="view">
       <div class="card" style="text-align: center;">
         <div class="emoji" style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
-        <h2>Výborně, <span id="final-nick"></span>!</h2>
+        <h2>Well done, <span id="final-nick"></span>!</h2>
         <div class="score-display" id="final-total"></div>
         <ul id="final-breakdown" class="result-list" style="text-align: left;"></ul>
-        <button id="btn-restart" class="btn btn-secondary">Hrát znovu</button>
+        <button id="btn-restart" class="btn btn-secondary">Play again</button>
       </div>
     </div>
 

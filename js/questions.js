@@ -7,7 +7,7 @@
  *   id          – unique string identifier
  *   text        – question text shown to the participant
  *   answerBase64 – btoa(correct answer), case-insensitive comparison
- *   formatHint  – example of the expected answer format, e.g. "např. EventID"
+ *   formatHint  – example of the expected answer format, e.g. "e.g. EventID"
  *   hintText    – hint text shown when participant requests a hint
  *   points      – maximum points for this question; hint costs points/2
  */

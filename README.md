@@ -1,67 +1,68 @@
 # Forensics CTF – Czechitas
 
-Jednoduchá CTF aplikace pro workshopy forenzní analýzy. Účastnice zadají nick a odpovídají na otázky ze Splunku a Volatility. Za každou správnou odpověď získají body, za použití nápovědy přijdou o polovinu bodů za danou otázku. Každá otázka má 3 pokusy.
+A simple CTF application for forensics analysis workshops. Participants enter a nickname and answer questions about Splunk and Volatility. Each correct answer earns points, using a hint deducts half the points for that question. Each question has 3 attempts.
 
-## Jak spustit
+## How to run
 
-Otevři `index.html` přímo v prohlížeči, nebo použij lokální server:
+Open `index.html` directly in your browser, or use a local server:
 
 ```bash
 npx serve .
 ```
 
-## Jak přidat / upravit otázku
+## How to add / edit a question
 
-Edituj soubor `js/questions.js`. Každá otázka vypadá takto:
+Edit the file `js/questions.js`. Each question looks like this:
 
 ```js
 {
-  id: 'splunk_4',           // unikátní ID (řetězec)
-  text: 'Text otázky…',    // zobrazený text
-  answerBase64: 'xxx==',    // správná odpověď zakódovaná v base64
-  formatHint: 'např. 1234', // ukázka formátu odpovědi
-  hintText: 'Text nápovědy…',
-  points: 10,               // max bodů; nápověda odečte points/2
+  id: 'splunk_4',           // unique ID (string)
+  text: 'Question text…',   // displayed text
+  answerBase64: 'xxx==',    // correct answer encoded in base64
+  formatHint: 'e.g. 1234',  // example answer format
+  hintText: 'Hint text…',
+  points: 10,               // max points; hint deducts points/2
 }
 ```
 
-### Jak vygenerovat base64 pro odpověď
+### How to generate base64 for the answer
 
-Otevři konzoli prohlížeče (F12) a napiš:
+Open the browser console (F12) and type:
 
 ```js
-btoa("správná odpověď")
+btoa("correct answer")
 ```
 
-Zkopíruj výsledek do pole `answerBase64`.
+Copy the result into the `answerBase64` field.
 
-> **Poznámka:** Base64 není šifrování — slouží jen k tomu, aby odpovědi nebyly okamžitě viditelné. Pro potřeby workshopu je to dostačující.
+> **Note:** Base64 is not encryption — it only hides answers from being immediately visible. For workshop purposes, this is sufficient.
 
-## Nasazení na GitHub Pages
+## Deploying to GitHub Pages
 
-1. Jdi do **Settings → Pages** v repozitáři
-2. Zvol **Branch: main**, složku **/ (root)**
-3. Ulož — aplikace bude dostupná na `https://<tvůj-nick>.github.io/forensics-ctf/`
+1. Go to **Settings → Pages** in your repository
+2. Select **Branch: main**, folder **/ (root)**
+3. Save — the app will be available at `https://<your-username>.github.io/forensics-ctf/`
 
-## Testy
+
+## Tests
 
 ```bash
 npm install
 npm test
 ```
 
-Testy pokrývají veškerou herní logiku (`js/game.js`) a validaci konfigurace otázek (`js/questions.js`).
+The tests cover all game logic (`js/game.js`) and question configuration validation (`js/questions.js`).
 
-## Struktura projektu
+## Project structure
 
 ```
-index.html          – SPA, všechny views
+index.html          – SPA, all views
 css/style.css       – Czechitas theme
 js/
-  questions.js      – konfigurace otázek (edituj zde)
-  game.js           – čistá herní logika (bez DOM)
-  main.js           – DOM logika, stav v sessionStorage
+  questions.js      – question configuration (edit here)
+  game.js           – pure game logic (no DOM)
+  main.js           – DOM logic, state in sessionStorage
 tests/
-  game.test.js      – unit testy herní logiky
-  questions.test.js – validace konfigurace otázek
+  game.test.js      – unit tests for game logic
+  questions.test.js – question configuration validation
 ```
