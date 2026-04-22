@@ -17,28 +17,28 @@ export const MODULES = [
     id: 'splunk',
     title: 'Splunk',
     questions: [
-      {
+    {
         id: 'splunk_1',
-        text: 'Jaké EventID odpovídá neúspěšnému přihlášení ve Windows Event Logu?',
+        text: 'What EventID corresponds to a failed login in the Windows Event Log?',
         answerBase64: 'NDYyNQ==', // 4625
-        formatHint: 'např. 1234',
-        hintText: 'Hledej v kategorii "Logon" – jde o failed logon event.',
+        formatHint: 'e.g. 1234',
+        hintText: 'Look in the "Logon" category – it is a failed logon event.',
         points: 10,
       },
       {
         id: 'splunk_2',
-        text: 'Kolik unikátních zdrojových IP adres se pokusilo přihlásit jako uživatel "admin" během incidentu?',
+        text: 'How many unique source IP addresses attempted to log in as the user "admin" during the incident?',
         answerBase64: 'MQ==', // 1
-        formatHint: 'např. 5',
-        hintText: 'Použij příkaz `stats dc(src_ip) by user` a filtruj na user="admin".',
+        formatHint: 'number, [0-9]',
+        hintText: 'Take a look on Events with EventId 4625',
         points: 10,
       },
       {
         id: 'splunk_3',
-        text: 'Jaké uživatelské jméno bylo použito při úspěšném přihlášení po sérii neúspěšných pokusů (EventID 4625 → 4624)?',
-        answerBase64: 'QWRtaW5pc3RyYXRvcg==', // Administrator
-        formatHint: 'např. john.doe',
-        hintText: 'Seřaď události podle času a hledej přechod z EventID 4625 na 4624 u stejné IP.',
+        text: 'What username was used in the successful login following a series of failed attempts (EventID 4625 → 4624)?',
+        answerBase64: 'dmFncmFudA==', // vagrant
+        formatHint: 'username, one word',
+        hintText: 'Take a look on Events EventId 4625 and 4624, filter by src_ip and username',
         points: 10,
       },
       {
@@ -97,30 +97,6 @@ export const MODULES = [
     questions: [
       {
         id: 'vol_1',
-        text: 'Jaký je profil operačního systému analyzovaného memory dumpu? (výstup příkazu imageinfo)',
-        answerBase64: 'V2luWFBTUDJ4ODY=', // WinXPSP2x86
-        formatHint: 'např. WinXPSP3x86',
-        hintText: 'Spusť `volatility -f dump.mem imageinfo` a podívej se na pole "Suggested Profile(s)".',
-        points: 10,
-      },
-      {
-        id: 'vol_2',
-        text: 'Jaký podezřelý proces byl spuštěn útočníkem? (název .exe souboru)',
-        answerBase64: 'c3ZjaG9zdC5leGU=', // svchost.exe
-        formatHint: 'např. malware.exe',
-        hintText: 'Použij `volatility pslist` nebo `pstree` a hledej procesy s neobvyklým rodičem nebo cestou.',
-        points: 10,
-      },
-      {
-        id: 'vol_3',
-        text: 'Jaká IP adresa se nacházela v síťových připojeních podezřelého procesu?',
-        answerBase64: 'MTkyLjE2OC4xLjEwNQ==', // 192.168.1.105
-        formatHint: 'např. 10.0.0.1',
-        hintText: 'Spusť `volatility -f dump.mem --profile=<profil> connections` nebo `netscan`.',
-        points: 10,
-      },
-      {
-        id: 'vol_4',
         text: 'What is Major/Minor version (of the OS)?',
         answerBase64: 'MTUuNzYwMQ==', // 15.7601
         formatHint: '[0-9]{2}\.[0-9]{4}',
@@ -128,7 +104,7 @@ export const MODULES = [
         points: 10,
       },
       {
-        id: 'vol_5',
+        id: 'vol_2',
         text: 'What is PPID (Parent Process ID) of the suspicious process?',
         answerBase64: 'MjA4MA==', // 2080
         formatHint: '[0-9]+',
@@ -136,15 +112,7 @@ export const MODULES = [
         points: 10,
       },
       {
-        id: 'vol_6',
-        text: 'What is the command line of the suspicious process?',
-        answerBase64: 'c2VydmljZSAtYQ==', // service -a
-        formatHint: '[a-zA-Z0-9\\-\\_]+',
-        hintText: 'windows.pslist',
-        points: 10,
-      },
-      {
-        id: 'vol_7',
+        id: 'vol_3',
         text: 'What is the SHA256 hash of the suspicious process?',
         answerBase64: 'NDgxZmI3MTM1Y2M2OWI2NzQzNGY4ZWEzMzM3ZTE1YTVjNDg1Y2ZlYmQ2Mzc1YWM1YTY4ZTE5YzExNzE2OTVlYw==', // 481fb7135cc69b67434f8ea3337e15a5c48fbe6c375ac5a68e19c1171695ec
         formatHint: 'SHA256 hash, 64 hex characters',
@@ -152,7 +120,7 @@ export const MODULES = [
         points: 10,
       },
       {
-        id: 'vol_8',
+        id: 'vol_4',
         text: 'What port number is adversary using for C2 (Command & Control)?',
         answerBase64: 'NDQ0NA==', // 4444
         formatHint: '[0-9]{5}',
@@ -160,7 +128,7 @@ export const MODULES = [
         points: 10,
       },
       {
-        id: 'vol_9',
+        id: 'vol_5',
         text: 'What threat category is associated with the suspicious process?',
         answerBase64: 'dHJvbWFu', // trojan
         formatHint: 'Use your CTI/OSINT skills',
@@ -168,7 +136,7 @@ export const MODULES = [
         points: 10,
       },
       {
-        id: 'vol_10',
+        id: 'vol_6',
         text: 'What (hacking)tool was used by the adversary?',
         answerBase64: '', // Metasploit
         formatHint: 'Take a look on AV signatures, answer is one word',
