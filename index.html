@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forensics CTF – Czechitas</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header>
+    <span class="header-logo">🔍</span>
+    <h1>Forensics CTF</h1>
+  </header>
+
+  <main>
+
+    <!-- ── View: Intro ─────────────────────────────────────────────────────── -->
+    <div id="view-intro" class="view active">
+      <div class="intro-hero">
+        <div class="emoji">🕵️‍♀️</div>
+        <h2>Forensics CTF</h2>
+        <p>Vítej na výzvě! Zadej svůj nick a otestuj, co jsi se naučila.</p>
+      </div>
+      <div class="card">
+        <div class="input-group">
+          <label for="input-nick">Tvůj nick</label>
+          <input type="text" id="input-nick" placeholder="např. alice42" autocomplete="off" maxlength="30" />
+          <span id="nick-error" class="field-error" hidden></span>
+        </div>
+        <button id="btn-start" class="btn btn-primary">Začít →</button>
+      </div>
+    </div>
+
+    <!-- ── View: Module select ─────────────────────────────────────────────── -->
+    <div id="view-modules" class="view">
+      <div class="card">
+        <h2>Vyber modul</h2>
+        <p>Každý modul obsahuje sérii otázek. Moduly můžeš plnit v libovolném pořadí.</p>
+        <div id="module-list"></div>
+        <p id="running-total" class="running-total"></p>
+      </div>
+    </div>
+
+    <!-- ── View: Question ──────────────────────────────────────────────────── -->
+    <div id="view-question" class="view">
+      <div class="card">
+        <div class="question-meta">
+          <span id="question-module-title"></span>
+          <span id="question-number"></span>
+        </div>
+
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+
+        <p class="question-text" id="question-text"></p>
+        <p class="format-hint" id="answer-format"></p>
+
+        <div class="answer-row">
+          <input type="text" id="answer-input" placeholder="Tvoje odpověď…" autocomplete="off" />
+          <button id="btn-submit" class="btn btn-primary">Odeslat</button>
+        </div>
+
+        <div id="feedback" class="feedback" hidden></div>
+
+        <div id="hint-box" class="hint-box" hidden>
+          <strong>💡 Nápověda</strong>
+          <span id="hint-text-content"></span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+          <span id="attempts-remaining" class="attempts-label"></span>
+          <button id="btn-hint" class="btn btn-ghost">Nápověda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── View: Module result ─────────────────────────────────────────────── -->
+    <div id="view-module-result" class="view">
+      <div class="card">
+        <h2 id="result-module-title"></h2>
+        <div class="score-display" id="result-score"></div>
+        <ul id="result-breakdown" class="result-list"></ul>
+        <button id="btn-next-module" class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- ── View: Final score ───────────────────────────────────────────────── -->
+    <div id="view-final" class="view">
+      <div class="card" style="text-align: center;">
+        <div class="emoji" style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
+        <h2>Výborně, <span id="final-nick"></span>!</h2>
+        <div class="score-display" id="final-total"></div>
+        <ul id="final-breakdown" class="result-list" style="text-align: left;"></ul>
+        <button id="btn-restart" class="btn btn-secondary">Hrát znovu</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
