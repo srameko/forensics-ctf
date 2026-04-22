@@ -304,10 +304,16 @@ input[type="text"]:disabled {
   border-color: var(--color-primary);
 }
 
+.module-btn--locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .module-title { font-size: 1.1rem; font-weight: 800; color: var(--color-text); }
 .module-questions { font-size: 0.875rem; color: var(--color-muted); }
 .module-score { font-size: 0.875rem; font-weight: 700; color: var(--color-correct); }
 .module-progress { font-size: 0.875rem; font-weight: 700; color: var(--color-primary); }
+.module-locked { font-size: 0.875rem; color: var(--color-muted); }
 
 .running-total {
   text-align: right;

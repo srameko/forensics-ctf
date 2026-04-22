@@ -69,26 +69,30 @@ function showModuleSelect() {
   const list = document.getElementById('module-list');
   list.innerHTML = '';
 
-  MODULES.forEach((mod) => {
+  const theoryDone = session.completed.includes(MODULES[0].id);
+
+  MODULES.forEach((mod, index) => {
     const done = session.completed.includes(mod.id);
+    const locked = index > 0 && !theoryDone;
     const score = done ? computeModuleScore(session, mod) : null;
     const max = computeModuleMaxScore(mod);
     const answeredCount = mod.questions.filter((q) => {
       const qs = getQuestionState(session, q.id);
       return qs.score !== null || qs.failed;
     }).length;
-    const inProgress = !done && answeredCount > 0;
+    const inProgress = !done && !locked && answeredCount > 0;
 
     const btn = document.createElement('button');
-    btn.className = 'module-btn' + (done ? ' module-btn--done' : inProgress ? ' module-btn--inprogress' : '');
-    btn.disabled = done;
+    btn.className = 'module-btn' + (done ? ' module-btn--done' : locked ? ' module-btn--locked' : inProgress ? ' module-btn--inprogress' : '');
+    btn.disabled = done || locked;
     btn.innerHTML = `
       <span class="module-title">${esc(mod.title)}</span>
       ${done       ? `<span class="module-score">${score} / ${max} points ✓</span>`
+        : locked     ? `<span class="module-locked">🔒 Complete Theory first</span>`
         : inProgress ? `<span class="module-progress">${answeredCount} / ${mod.questions.length} answered</span>`
         :              `<span class="module-questions">${mod.questions.length} questions</span>`}
     `;
-    if (!done) btn.addEventListener('click', () => startModule(mod.id));
+    if (!done && !locked) btn.addEventListener('click', () => startModule(mod.id));
     list.appendChild(btn);
   });
 
