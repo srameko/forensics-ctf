@@ -14,6 +14,60 @@
 
 export const MODULES = [
   {
+    id: 'theory',
+    title: 'Theory',
+    questions: [
+      {
+        id: 'theory_1',
+        text: 'An attacker uses PowerShell to execute malicious commands on a compromised host. What is the MITRE ATT&CK technique ID for this?',
+        answerBase64: 'VDEwNTkuMDAx', // T1059.001
+        formatHint: 'T####.###',
+        hintText: 'Look under "Command and Scripting Interpreter" on attack.mitre.org',
+        points: 10,
+      },
+      {
+        id: 'theory_2',
+        text: 'How many vertices does the Diamond Model of Intrusion Analysis have?',
+        answerBase64: 'NA==', // 4
+        formatHint: 'number',
+        hintText: 'Think: Adversary, Capability, Infrastructure, Victim',
+        points: 10,
+      },
+      {
+        id: 'theory_3',
+        text: 'How do you defang the IP address 8.8.8.8?',
+        answerBase64: 'OFsuXThbLl04Wy5dOA==', // 8[.]8[.]8[.]8
+        formatHint: '8[.]8[.]8[.]8',
+        hintText: 'Replace each dot with [.]',
+        points: 10,
+      },
+      {
+        id: 'theory_4',
+        text: 'Which framework maps attacker techniques and tactics (used to categorize each step of an attack)?',
+        answerBase64: 'TUlUUkUgQVRUJkNL', // MITRE ATT&CK
+        formatHint: 'Two words, e.g. NAME FRAMEWORK',
+        hintText: 'It is maintained by MITRE — the name includes the word ATT&CK.',
+        points: 10,
+      },
+      {
+        id: 'theory_5',
+        text: 'What is the defanged form of the URL https://evil.com?',
+        answerBase64: 'aHh4cHNbOi8vXWV2aWxbLl1jb20=', // hxxps[://]evil[.]com
+        formatHint: 'hxxps[://]evil[.]com',
+        hintText: 'Replace "https" with "hxxps", replace "://" with "[://]", replace each dot with "[.]"',
+        points: 10,
+      },
+      {
+        id: 'theory_6',
+        text: 'You collected a suspicious binary from a compromised system. Which Linux command computes its SHA-256 checksum?',
+        answerBase64: 'c2hhMjU2c3Vt', // sha256sum
+        formatHint: 'one word, all lowercase',
+        hintText: 'Similar commands exist for MD5 (md5sum) and SHA-1 (sha1sum) — same pattern.',
+        points: 10,
+      },
+    ],
+  },
+  {
     id: 'splunk',
     title: 'Splunk',
     questions: [
@@ -54,7 +108,7 @@ export const MODULES = [
         text: 'When was the host compromised?',
         answerBase64: 'MjAyNS0wMy0yMA==', // 2025-03-20
         formatHint: 'YYYY-MM-DD',
-        hintText: '',
+        hintText: 'Look for the first successful login (EventID 4624) following the brute force attempts.',
         points: 10,
       },
       {
@@ -138,7 +192,7 @@ export const MODULES = [
       {
         id: 'vol_6',
         text: 'What (hacking)tool was used by the adversary?',
-        answerBase64: '', // Metasploit
+        answerBase64: 'TWV0YXNwbG9pdA==', // Metasploit
         formatHint: 'Take a look on AV signatures, answer is one word',
         hintText: 'It is part of Kali Linux, one of the most popular frameworks for pentesting/red teaming',
         points: 10,
