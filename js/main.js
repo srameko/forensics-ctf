@@ -289,7 +289,7 @@ function showModuleResult(session, mod) {
   const allDone = MODULES.every((m) => session.completed.includes(m.id));
   const nextBtn = document.getElementById('btn-next-module');
   if (allDone) {
-    nextBtn.textContent = 'Show results →';
+    nextBtn.textContent = 'Reveal incident report →';
     nextBtn.onclick = () => showFinalScore(session);
   } else {
     nextBtn.textContent = 'Next module →';

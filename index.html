@@ -92,8 +92,18 @@
       <div class="card" style="text-align: center;">
         <div class="emoji" style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
         <h2>Well done, <span id="final-nick"></span>!</h2>
+        <p>You finished the full quiz. The final incident report is now unlocked below.</p>
         <div class="score-display" id="final-total"></div>
         <ul id="final-breakdown" class="result-list" style="text-align: left;"></ul>
+        <section class="report-reveal" aria-labelledby="incident-report-title">
+          <h3 id="incident-report-title">Incident Report</h3>
+          <p>This image summarizes the full attacker activity observed on the host.</p>
+          <img
+            class="report-image"
+            src="incident-report.png"
+            alt="Incident response report timeline and findings for the compromised host"
+          />
+        </section>
         <button id="btn-restart" class="btn btn-secondary">Play again</button>
       </div>
     </div>

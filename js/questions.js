@@ -71,76 +71,84 @@ export const MODULES = [
     id: 'splunk',
     title: 'Splunk',
     questions: [
-    {
+      {
         id: 'splunk_1',
-        text: 'What EventID corresponds to a failed login in the Windows Event Log?',
-        answerBase64: 'NDYyNQ==', // 4625
-        formatHint: 'e.g. 1234',
-        hintText: 'Look in the "Logon" category – it is a failed logon event.',
+        text: 'What IP address performed the null-session reconnaissance and later brute-force attack?',
+        answerBase64: 'MTAuMC4zLjU=', // 10.0.3.5
+        formatHint: 'IPv4 address',
+        hintText: 'In the 2025-03-20 timeline, follow the same source IP through the null-session events and the brute-force burst.',
         points: 10,
       },
       {
         id: 'splunk_2',
-        text: 'How many unique source IP addresses attempted to log in as the user "admin" during the incident?',
-        answerBase64: 'MQ==', // 1
-        formatHint: 'number, [0-9]',
-        hintText: 'Take a look on Events with EventId 4625',
+        text: 'Which local account was successfully compromised after the password attack?',
+        answerBase64: 'dmFncmFudA==', // vagrant
+        formatHint: 'username, one word',
+        hintText: 'Find the first successful 4624 event that happens right after the 1,008 failed logons.',
         points: 10,
       },
       {
         id: 'splunk_3',
-        text: 'What username was used in the successful login following a series of failed attempts (EventID 4625 → 4624)?',
-        answerBase64: 'dmFncmFudA==', // vagrant
-        formatHint: 'username, one word',
-        hintText: 'Take a look on Events EventId 4625 and 4624, filter by src_ip and username',
+        text: 'Which Event ID in Windows Security logs represents a failed logon?',
+        answerBase64: 'NDYyNQ==', // 4625
+        formatHint: 'number, e.g. 4624',
+        hintText: 'Check the Appendix Event ID reference or the brute-force rows in the timeline.',
         points: 10,
       },
       {
         id: 'splunk_4',
-        text: 'What is EventId 4625?',
-        answerBase64: 'QW4gYWNjb3VudCBmYWlsZWQgdG8gbG9nIG9u', // An account failed to log on
-        formatHint: 'Six words',
-        hintText: 'https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventID=4625',
+        text: 'How many failed logon attempts hit the compromised account before the successful login?',
+        answerBase64: 'MTAwOA==', // 1008
+        formatHint: 'number',
+        hintText: 'The brute-force row in the timeline gives the exact total of failed 4625 events.',
         points: 10,
       },
       {
         id: 'splunk_5',
-        text: 'When was the host compromised?',
-        answerBase64: 'MjAyNS0wMy0yMA==', // 2025-03-20
-        formatHint: 'YYYY-MM-DD',
-        hintText: 'Look for the first successful login (EventID 4624) following the brute force attempts.',
+        text: 'Which authentication protocol was used in the successful compromise logon?',
+        answerBase64: 'TlRMTSB2Mg==', // NTLM v2
+        formatHint: 'protocol name',
+        hintText: 'Use the successful compromise row in the timeline. The protocol is written right after Logon Type 3.',
         points: 10,
       },
       {
         id: 'splunk_6',
-        text: 'How do we call the attack, when passwords (of a user) are being guessed?',
-        answerBase64: 'RGljdGlvbmFyeSBhdHRhY2s=', // Dictionary attack
-        formatHint: 'Two words',
-        hintText: 'Adversary is using known words in a list...',
+        text: 'What LogonType was recorded for the successful network logon by the attacker?',
+        answerBase64: 'Mw==', // 3
+        formatHint: 'number',
+        hintText: 'The successful 4624 row already says the logon type in parentheses.',
         points: 10,
       },
       {
         id: 'splunk_7',
-        text: 'What LogonType is associated with vagrant user?',
-        answerBase64: 'Mg==', // 2
-        formatHint: 'Number, ie. 8',
-        hintText: 'Take a look into PayloadData2 field',
+        text: 'At what UTC time did the successful compromise logon occur?',
+        answerBase64: 'MTI6Mzk6NDYuNzM0', // 12:39:46.734
+        formatHint: 'HH:MM:SS.mmm',
+        hintText: 'Use the exact timestamp from the successful compromise row, not just the date or rounded second.',
         points: 10,
       },
       {
         id: 'splunk_8',
-        text: 'What IP Address was used by the attacker?',
-        answerBase64: 'MTAuMC4zLjU=', // 10.0.3.5
-        formatHint: 'IPv4 address',
-        hintText: 'Investigate EventId 4624 events',
+        text: 'Which Event ID shows that a new Windows service was installed?',
+        answerBase64: 'NzA0NQ==', // 7045
+        formatHint: 'number',
+        hintText: 'The Appendix lists the Event ID for "New service installed," and the post-compromise timeline uses it several times.',
         points: 10,
       },
       {
         id: 'splunk_9',
-        text: 'What name is the executable dropped by the adversary?',
-        answerBase64: 'VWlmTHRRcVguZXhl', // UifLqQvX.exe
-        formatHint: '[a-zA-Z0-9]+\.exe',
-        hintText: 'Look for the persistence mechanism used by the adversary',
+        text: 'What was the name of the first malicious service installed right after the compromise?',
+        answerBase64: 'RFdCc3JOVVJFY01VQVBtQQ==', // DWBsrNUREcMUAPmA
+        formatHint: 'service name',
+        hintText: 'Under Post-Compromise Activity, pick the first row from the Malicious Services table.',
+        points: 10,
+      },
+      {
+        id: 'splunk_10',
+        text: 'What was the name of the auto-start service that gave the attacker persistence?',
+        answerBase64: 'Z0tJbFlZUUVOVU9M', // gKIlYYQENUOL
+        formatHint: 'service name',
+        hintText: 'In the Malicious Services table, choose the only service whose Start Type is auto-start.',
         points: 10,
       },
     ],
@@ -151,50 +159,82 @@ export const MODULES = [
     questions: [
       {
         id: 'vol_1',
-        text: 'What is Major/Minor version (of the OS)?',
-        answerBase64: 'MTUuNzYwMQ==', // 15.7601
-        formatHint: '[0-9]{2}\.[0-9]{4}',
-        hintText: 'windows.info',
+        text: 'What is the name of the malicious executable that was still running in memory at capture time?',
+        answerBase64: 'VWlmTHRRcVguZXhl', // UifLtQqX.exe
+        formatHint: 'filename.exe',
+        hintText: 'In Memory Analysis, start with the "Confirmed Active Backdoor" section and look for the running executable name.',
         points: 10,
       },
       {
         id: 'vol_2',
-        text: 'What is PPID (Parent Process ID) of the suspicious process?',
-        answerBase64: 'MjA4MA==', // 2080
-        formatHint: '[0-9]+',
-        hintText: 'windows.pslist',
+        text: 'Which Windows service name launched that persistent backdoor?',
+        answerBase64: 'Z0tJbFlZUUVOVU9M', // gKIlYYQENUOL
+        formatHint: 'service name',
+        hintText: 'Use the same "Confirmed Active Backdoor" table and read the Service name field.',
         points: 10,
       },
       {
         id: 'vol_3',
-        text: 'What is the SHA256 hash of the suspicious process?',
-        answerBase64: 'NDgxZmI3MTM1Y2M2OWI2NzQzNGY4ZWEzMzM3ZTE1YTVjNDg1Y2ZlYmQ2Mzc1YWM1YTY4ZTE5YzExNzE2OTVlYw==', // 481fb7135cc69b67434f8ea3337e15a5c48fbe6c375ac5a68e19c1171695ec
-        formatHint: 'SHA256 hash, 64 hex characters',
-        hintText: 'windows.dumpfiles',
+        text: 'Under which account was the backdoor process running?',
+        answerBase64: 'TG9jYWwgU3lzdGVt', // Local System
+        formatHint: 'two words',
+        hintText: 'The report says the process had the highest Windows privilege level and names the account explicitly.',
         points: 10,
       },
       {
         id: 'vol_4',
-        text: 'What port number is adversary using for C2 (Command & Control)?',
-        answerBase64: 'NDQ0NA==', // 4444
-        formatHint: '[0-9]{5}',
-        hintText: 'windows.netscan',
+        text: 'What was the PID of the parent UifLtQqX.exe process?',
+        answerBase64: 'MjA4MA==', // 2080
+        formatHint: 'number',
+        hintText: 'In the "Confirmed Active Backdoor" table, use the value shown next to PID (parent).',
         points: 10,
       },
       {
         id: 'vol_5',
-        text: 'What threat category is associated with the suspicious process?',
-        answerBase64: 'dHJvbWFu', // trojan
-        formatHint: 'Use your CTI/OSINT skills',
-        hintText: 'virustotal',
+        text: 'What was the PID of the active child beacon process at the time of memory capture?',
+        answerBase64: 'NTM5Ng==', // 5396
+        formatHint: 'number',
+        hintText: 'Use the child PID tied to the ESTABLISHED connection in the Live C2 Session table.',
         points: 10,
       },
       {
         id: 'vol_6',
-        text: 'What (hacking)tool was used by the adversary?',
-        answerBase64: 'TWV0YXNwbG9pdA==', // Metasploit
-        formatHint: 'Take a look on AV signatures, answer is one word',
-        hintText: 'It is part of Kali Linux, one of the most popular frameworks for pentesting/red teaming',
+        text: 'Which remote IP address was the live beacon connected to at capture time?',
+        answerBase64: 'MTAuMC4zLjU=', // 10.0.3.5
+        formatHint: 'IPv4 address',
+        hintText: 'In the ESTABLISHED connection, use the destination side of 10.0.3.4:49390 -> ??.',
+        points: 10,
+      },
+      {
+        id: 'vol_7',
+        text: 'Which remote TCP port was used by the live C2 connection?',
+        answerBase64: 'NDQ0NA==', // 4444
+        formatHint: 'port number',
+        hintText: 'Use the destination port from the same ESTABLISHED connection; the report notes it is Metasploit\'s default listener.',
+        points: 10,
+      },
+      {
+        id: 'vol_8',
+        text: 'Which malware framework did the memory evidence identify?',
+        answerBase64: 'TWV0ZXJwcmV0ZXI=', // Meterpreter
+        formatHint: 'one word',
+        hintText: 'The YARA rule name includes "meterpreter_reverse_tcp_shellcode". Use the payload name, not the full rule.',
+        points: 10,
+      },
+      {
+        id: 'vol_9',
+        text: 'What suspicious file was executed from the vagrant user\'s Downloads folder shortly before the dump?',
+        answerBase64: 'd2luZG93c191cGRhdGUuZXhl', // windows_update.exe
+        formatHint: 'filename.exe',
+        hintText: 'Look for the shimcache entry at 11:30:18 UTC in the "New Indicator" section.',
+        points: 10,
+      },
+      {
+        id: 'vol_10',
+        text: 'What binary path was configured for the persistent service backdoor?',
+        answerBase64: 'QzpcV2luZG93c1xURU1QXFVpZkx0UXFYLmV4ZSBER0h0', // C:\Windows\TEMP\UifLtQqX.exe DGHt
+        formatHint: 'full Windows path',
+        hintText: 'Copy the Binary path exactly from the "Confirmed Active Backdoor" table, including the extra argument after the EXE name.',
         points: 10,
       },
     ],
