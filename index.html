@@ -39,6 +39,7 @@
         <p>Each module contains a series of questions. You can complete the modules in any order.</p>
         <div id="module-list"></div>
         <p id="running-total" class="running-total"></p>
+        <button id="btn-view-all-solutions" class="btn btn-secondary" hidden>View all solutions</button>
       </div>
     </div>
 
@@ -67,6 +68,14 @@
         <div id="hint-box" class="hint-box" hidden>
           <strong>💡 Hint</strong>
           <span id="hint-text-content"></span>
+        </div>
+
+        <div id="solution-box" class="solution-box" hidden>
+          <div class="solution-header">
+            <strong>Solution query</strong>
+            <button id="btn-copy-solution" class="btn btn-ghost" type="button">Copy</button>
+          </div>
+          <textarea id="solution-content" readonly aria-label="Solution query"></textarea>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
@@ -104,7 +113,18 @@
             alt="Incident response report timeline and findings for the compromised host"
           />
         </section>
+        <button id="btn-open-solutions-from-final" class="btn btn-secondary">View all solutions</button>
         <button id="btn-restart" class="btn btn-secondary">Play again</button>
+      </div>
+    </div>
+
+    <!-- ── View: All solutions ─────────────────────────────────────────────── -->
+    <div id="view-solutions" class="view">
+      <div class="card">
+        <h2>All solutions</h2>
+        <p>Review all question answers and copy the related query/command any time.</p>
+        <div id="solutions-list" class="solutions-list"></div>
+        <button id="btn-back-from-solutions" class="btn btn-primary">← Back</button>
       </div>
     </div>
 

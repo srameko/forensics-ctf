@@ -14,6 +14,7 @@ import {
 } from './game.js';
 
 const SESSION_KEY = 'ctf_session';
+let solutionsBackView = 'view-final';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -105,6 +106,10 @@ function showModuleSelect() {
     ? `Total: ${total} / ${totalMax} points`
     : '';
 
+  const allDone = MODULES.every((m) => session.completed.includes(m.id));
+  const solutionsBtn = document.getElementById('btn-view-all-solutions');
+  solutionsBtn.hidden = !allDone;
+
   showView('view-modules');
 }
 
@@ -139,11 +144,17 @@ function showQuestion() {
   document.getElementById('answer-format').textContent = `Format: ${q.formatHint}`;
   document.getElementById('answer-input').value = '';
   document.getElementById('answer-input').disabled = false;
-  document.getElementById('btn-submit').disabled = false;
+  const submitBtn = document.getElementById('btn-submit');
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Submit';
+  submitBtn.dataset.mode = 'submit';
   document.getElementById('feedback').hidden = true;
   document.getElementById('feedback').className = 'feedback';
   document.getElementById('hint-box').hidden = true;
   document.getElementById('hint-text-content').textContent = '';
+  document.getElementById('solution-box').hidden = true;
+  document.getElementById('solution-content').value = '';
+  resetCopyButton();
 
   // Hint button
   const hintBtn = document.getElementById('btn-hint');
@@ -175,9 +186,16 @@ document.getElementById('answer-input').addEventListener('keydown', (e) => {
 });
 
 function submitAnswer() {
+  const submitBtn = document.getElementById('btn-submit');
   let session = loadSession();
   const mod = MODULES.find((m) => m.id === currentModuleId);
   const q = mod.questions[currentQuestionIndex];
+
+  if (submitBtn.dataset.mode === 'next') {
+    advanceQuestion(session, mod);
+    return;
+  }
+
   const qs = getQuestionState(session, q.id);
   const input = document.getElementById('answer-input').value;
 
@@ -196,9 +214,8 @@ function submitAnswer() {
     feedbackEl.className = 'feedback feedback--correct';
     feedbackEl.hidden = false;
     document.getElementById('answer-input').disabled = true;
-    document.getElementById('btn-submit').disabled = true;
-
-    setTimeout(() => advanceQuestion(session, mod), 1400);
+    revealSolution(q);
+    armNextButton();
   } else {
     session = recordFailedAttempt(session, q.id);
     saveSession(session);
@@ -211,9 +228,9 @@ function submitAnswer() {
       feedbackEl.className = 'feedback feedback--wrong';
       feedbackEl.hidden = false;
       document.getElementById('answer-input').disabled = true;
-      document.getElementById('btn-submit').disabled = true;
       document.getElementById('attempts-remaining').textContent = 'No attempts left';
-      setTimeout(() => advanceQuestion(session, mod), 2200);
+      revealSolution(q);
+      armNextButton();
     } else {
       feedbackEl.textContent = `✗ Incorrect. Attempts remaining: ${remaining}`;
       feedbackEl.className = 'feedback feedback--wrong';
@@ -223,6 +240,40 @@ function submitAnswer() {
     }
   }
 }
+
+function revealSolution(question) {
+  if (!question.solution) return;
+  document.getElementById('solution-content').value = question.solution;
+  document.getElementById('solution-box').hidden = false;
+}
+
+function armNextButton() {
+  const submitBtn = document.getElementById('btn-submit');
+  submitBtn.textContent = 'Next →';
+  submitBtn.dataset.mode = 'next';
+  submitBtn.disabled = false;
+}
+
+function resetCopyButton() {
+  const copyBtn = document.getElementById('btn-copy-solution');
+  copyBtn.textContent = 'Copy';
+}
+
+document.getElementById('btn-copy-solution').addEventListener('click', async () => {
+  const copyBtn = document.getElementById('btn-copy-solution');
+  const solutionText = document.getElementById('solution-content').value;
+  if (!solutionText) return;
+
+  try {
+    await navigator.clipboard.writeText(solutionText);
+    copyBtn.textContent = 'Copied';
+  } catch {
+    const textarea = document.getElementById('solution-content');
+    textarea.focus();
+    textarea.select();
+    copyBtn.textContent = 'Select and copy';
+  }
+});
 
 function advanceQuestion(session, mod) {
   currentQuestionIndex++;
@@ -320,6 +371,85 @@ function showFinalScore(session) {
 
   showView('view-final');
 }
+
+function showAllSolutions() {
+  const session = loadSession();
+  const allDone = MODULES.every((m) => session.completed.includes(m.id));
+  if (!allDone) return;
+
+  const list = document.getElementById('solutions-list');
+  list.innerHTML = '';
+
+  MODULES.forEach((mod) => {
+    const section = document.createElement('section');
+    section.className = 'solutions-module';
+
+    const title = document.createElement('h3');
+    title.textContent = mod.title;
+    section.appendChild(title);
+
+    mod.questions.forEach((q, idx) => {
+      const item = document.createElement('article');
+      item.className = 'solutions-item';
+
+      const answer = atob(q.answerBase64);
+      const queryText = q.solution || 'No query/command saved for this question.';
+
+      item.innerHTML = `
+        <p class="solutions-q"><strong>Q${idx + 1}:</strong> ${esc(q.text)}</p>
+        <p class="solutions-a"><strong>Answer:</strong> ${esc(answer)}</p>
+      `;
+
+      const textarea = document.createElement('textarea');
+      textarea.className = 'solutions-textarea';
+      textarea.readOnly = true;
+      textarea.value = queryText;
+      textarea.setAttribute('aria-label', `${mod.title} question ${idx + 1} solution`);
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'btn btn-ghost';
+      copyBtn.type = 'button';
+      copyBtn.textContent = 'Copy query';
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(queryText);
+          copyBtn.textContent = 'Copied';
+        } catch {
+          textarea.focus();
+          textarea.select();
+          copyBtn.textContent = 'Select and copy';
+        }
+      });
+
+      item.appendChild(textarea);
+      item.appendChild(copyBtn);
+      section.appendChild(item);
+    });
+
+    list.appendChild(section);
+  });
+
+  showView('view-solutions');
+}
+
+document.getElementById('btn-view-all-solutions').addEventListener('click', () => {
+  solutionsBackView = 'view-modules';
+  showAllSolutions();
+});
+
+document.getElementById('btn-open-solutions-from-final').addEventListener('click', () => {
+  solutionsBackView = 'view-final';
+  showAllSolutions();
+});
+
+document.getElementById('btn-back-from-solutions').addEventListener('click', () => {
+  if (solutionsBackView === 'view-modules') {
+    showModuleSelect();
+    return;
+  }
+  const session = loadSession();
+  showFinalScore(session);
+});
 
 document.getElementById('btn-restart').addEventListener('click', () => {
   sessionStorage.removeItem(SESSION_KEY);

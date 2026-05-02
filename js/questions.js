@@ -9,6 +9,8 @@
  *   answerBase64 – btoa(correct answer), case-insensitive comparison
  *   formatHint  – example of the expected answer format, e.g. "e.g. EventID"
  *   hintText    – hint text shown when participant requests a hint
+ *   solution    – optional query/solution text revealed after correct answer
+ *                 or after max failed attempts
  *   points      – maximum points for this question; hint costs points/2
  */
 
@@ -77,6 +79,7 @@ export const MODULES = [
         answerBase64: 'MTAuMC4zLjU=', // 10.0.3.5
         formatHint: 'IPv4 address',
         hintText: 'In the 2025-03-20 timeline, follow the same source IP through the null-session events and the brute-force burst.',
+        solution: `index=* Channel=Security EventId=4625 PayloadData2="LogonType 3" TimeCreated="2025-03-20*"\n| rex field=RemoteHost "\\((?P<src_ip>[^)]+)\\)"\n| stats count BY src_ip\n\nTop source IP: 10.0.3.5`,
         points: 10,
       },
       {
@@ -85,6 +88,7 @@ export const MODULES = [
         answerBase64: 'dmFncmFudA==', // vagrant
         formatHint: 'username, one word',
         hintText: 'Find the first successful 4624 event that happens right after the 1,008 failed logons.',
+        solution: `index=* Channel=Security EventId=4624 PayloadData2="LogonType 3" RemoteHost="*10.0.3.5*" NOT PayloadData1="*ANONYMOUS LOGON*"\n| sort TimeCreated\n| head 1\n| table TimeCreated PayloadData1\n\nCompromised account: vagrant`,
         points: 10,
       },
       {
@@ -93,6 +97,7 @@ export const MODULES = [
         answerBase64: 'NDYyNQ==', // 4625
         formatHint: 'number, e.g. 4624',
         hintText: 'Check the Appendix Event ID reference or the brute-force rows in the timeline.',
+        solution: `index=* Channel=Security Keywords="Audit failure" MapDescription="Failed logon"\n| stats count BY EventId\n\nFailed logon Event ID: 4625`,
         points: 10,
       },
       {
@@ -101,6 +106,7 @@ export const MODULES = [
         answerBase64: 'MTAwOA==', // 1008
         formatHint: 'number',
         hintText: 'The brute-force row in the timeline gives the exact total of failed 4625 events.',
+        solution: `index=* Channel=Security EventId=4625 PayloadData2="LogonType 3" RemoteHost="*10.0.3.5*" PayloadData1="*vagrant*" TimeCreated="2025-03-20*"\n| stats count AS total_failures\n\nTotal failed attempts: 1008`,
         points: 10,
       },
       {
@@ -109,6 +115,7 @@ export const MODULES = [
         answerBase64: 'TlRMTSB2Mg==', // NTLM v2
         formatHint: 'protocol name',
         hintText: 'Use the successful compromise row in the timeline. The protocol is written right after Logon Type 3.',
+        solution: `index=* Channel=Security EventId=4624 PayloadData2="LogonType 3" RemoteHost="*10.0.3.5*" PayloadData1="*vagrant*"\n| rex field=Payload "LmPackageName[^}]+?\"#text\":\"(?P<LmPackage>[^\"]+)\""\n| sort TimeCreated\n| head 1\n| table TimeCreated LmPackage\n\nAuth protocol: NTLM V2`,
         points: 10,
       },
       {
@@ -117,6 +124,7 @@ export const MODULES = [
         answerBase64: 'Mw==', // 3
         formatHint: 'number',
         hintText: 'The successful 4624 row already says the logon type in parentheses.',
+        solution: `index=* Channel=Security EventId=4624 RemoteHost="*10.0.3.5*" PayloadData1="*vagrant*"\n| sort TimeCreated\n| head 1\n| table TimeCreated PayloadData2\n\nLogonType: 3`,
         points: 10,
       },
       {
@@ -125,6 +133,7 @@ export const MODULES = [
         answerBase64: 'MTI6Mzk6NDYuNzM0', // 12:39:46.734
         formatHint: 'HH:MM:SS.mmm',
         hintText: 'Use the exact timestamp from the successful compromise row, not just the date or rounded second.',
+        solution: `index=* Channel=Security EventId=4624 PayloadData2="LogonType 3" RemoteHost="*10.0.3.5*" PayloadData1="Target: VAGRANT-2008R2\\vagrant"\n| sort TimeCreated\n| head 1\n| table TimeCreated RecordNumber\n\nUTC time: 12:39:46.734`,
         points: 10,
       },
       {
@@ -133,6 +142,7 @@ export const MODULES = [
         answerBase64: 'NzA0NQ==', // 7045
         formatHint: 'number',
         hintText: 'The Appendix lists the Event ID for "New service installed," and the post-compromise timeline uses it several times.',
+        solution: `index=* Channel=System MapDescription="A new service was installed in the system"\n| stats count BY EventId Provider\n\nService install Event ID: 7045`,
         points: 10,
       },
       {
@@ -141,6 +151,7 @@ export const MODULES = [
         answerBase64: 'RFdCc3JOVVJFY01VQVBtQQ==', // DWBsrNUREcMUAPmA
         formatHint: 'service name',
         hintText: 'Under Post-Compromise Activity, pick the first row from the Malicious Services table.',
+        solution: `index=* Channel=System EventId=7045 (TimeCreated="2025-03-20T12:39:4*" OR TimeCreated="2025-03-20T12:4*")\n| sort TimeCreated\n| head 1\n| table TimeCreated PayloadData1\n\nFirst malicious service: DWBsrNUREcMUAPmA`,
         points: 10,
       },
       {
@@ -149,6 +160,7 @@ export const MODULES = [
         answerBase64: 'Z0tJbFlZUUVOVU9M', // gKIlYYQENUOL
         formatHint: 'service name',
         hintText: 'In the Malicious Services table, choose the only service whose Start Type is auto-start.',
+        solution: `index=* Channel=System EventId=7045 PayloadData2="StartType: auto start" PayloadData3="Account: LocalSystem" TimeCreated="2025-03-20*"\n| table TimeCreated PayloadData1 PayloadData2\n\nPersistence service: gKIlYYQENUOL`,
         points: 10,
       },
     ],
@@ -163,6 +175,7 @@ export const MODULES = [
         answerBase64: 'VWlmTHRRcVguZXhl', // UifLtQqX.exe
         formatHint: 'filename.exe',
         hintText: 'In Memory Analysis, start with the "Confirmed Active Backdoor" section and look for the running executable name.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.pslist\n\nLook for suspicious process name in active list: UifLtQqX.exe`,
         points: 10,
       },
       {
@@ -171,6 +184,7 @@ export const MODULES = [
         answerBase64: 'Z0tJbFlZUUVOVU9M', // gKIlYYQENUOL
         formatHint: 'service name',
         hintText: 'Use the same "Confirmed Active Backdoor" table and read the Service name field.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.svcscan\n\nService display name tied to backdoor binary: gKIlYYQENUOL`,
         points: 10,
       },
       {
@@ -179,6 +193,7 @@ export const MODULES = [
         answerBase64: 'TG9jYWwgU3lzdGVt', // Local System
         formatHint: 'two words',
         hintText: 'The report says the process had the highest Windows privilege level and names the account explicitly.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.svcscan\n\nCheck service security context/account: Local System`,
         points: 10,
       },
       {
@@ -187,6 +202,7 @@ export const MODULES = [
         answerBase64: 'MjA4MA==', // 2080
         formatHint: 'number',
         hintText: 'In the "Confirmed Active Backdoor" table, use the value shown next to PID (parent).',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.pslist\nvol -f VAGRANT-2008R2-20250321-113332.dmp windows.pstree\n\nParent PID for UifLtQqX.exe: 2080`,
         points: 10,
       },
       {
@@ -195,6 +211,7 @@ export const MODULES = [
         answerBase64: 'NTM5Ng==', // 5396
         formatHint: 'number',
         hintText: 'Use the child PID tied to the ESTABLISHED connection in the Live C2 Session table.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.netscan\n\nPID with ESTABLISHED C2 session to attacker: 5396`,
         points: 10,
       },
       {
@@ -203,6 +220,7 @@ export const MODULES = [
         answerBase64: 'MTAuMC4zLjU=', // 10.0.3.5
         formatHint: 'IPv4 address',
         hintText: 'In the ESTABLISHED connection, use the destination side of 10.0.3.4:49390 -> ??.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.netscan\n\nFrom 10.0.3.4:49390 ESTABLISHED -> remote 10.0.3.5:4444`,
         points: 10,
       },
       {
@@ -211,6 +229,7 @@ export const MODULES = [
         answerBase64: 'NDQ0NA==', // 4444
         formatHint: 'port number',
         hintText: 'Use the destination port from the same ESTABLISHED connection; the report notes it is Metasploit\'s default listener.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.netscan\n\nRemote C2 port in ESTABLISHED session: 4444`,
         points: 10,
       },
       {
@@ -219,6 +238,7 @@ export const MODULES = [
         answerBase64: 'TWV0ZXJwcmV0ZXI=', // Meterpreter
         formatHint: 'one word',
         hintText: 'The YARA rule name includes "meterpreter_reverse_tcp_shellcode". Use the payload name, not the full rule.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.malfind\n\nYARA hit: meterpreter_reverse_tcp_shellcode -> framework: Meterpreter`,
         points: 10,
       },
       {
@@ -227,6 +247,7 @@ export const MODULES = [
         answerBase64: 'd2luZG93c191cGRhdGUuZXhl', // windows_update.exe
         formatHint: 'filename.exe',
         hintText: 'Look for the shimcache entry at 11:30:18 UTC in the "New Indicator" section.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.shimcachemem\n\nExecuted file under Downloads: windows_update.exe`,
         points: 10,
       },
       {
@@ -235,6 +256,7 @@ export const MODULES = [
         answerBase64: 'QzpcV2luZG93c1xURU1QXFVpZkx0UXFYLmV4ZSBER0h0', // C:\Windows\TEMP\UifLtQqX.exe DGHt
         formatHint: 'full Windows path',
         hintText: 'Copy the Binary path exactly from the "Confirmed Active Backdoor" table, including the extra argument after the EXE name.',
+        solution: `vol -f VAGRANT-2008R2-20250321-113332.dmp windows.svcscan\n\nPersistent service binary path: C:\\Windows\\TEMP\\UifLtQqX.exe DGHt`,
         points: 10,
       },
     ],
