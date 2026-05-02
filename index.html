@@ -76,6 +76,10 @@
             <button id="btn-copy-solution" class="btn btn-ghost" type="button">Copy</button>
           </div>
           <textarea id="solution-content" readonly aria-label="Solution query"></textarea>
+          <div id="solution-explanation" class="solution-explanation" hidden>
+            <strong>Why this is correct</strong>
+            <p id="solution-explanation-content"></p>
+          </div>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
@@ -122,7 +126,7 @@
     <div id="view-solutions" class="view">
       <div class="card">
         <h2>All solutions</h2>
-        <p>Review all question answers and copy the related query/command any time.</p>
+        <p>Review all question answers, why they are correct, and copy the related query/command any time.</p>
         <div id="solutions-list" class="solutions-list"></div>
         <button id="btn-back-from-solutions" class="btn btn-primary">← Back</button>
       </div>

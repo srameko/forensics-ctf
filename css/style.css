@@ -301,6 +301,20 @@ input[type="text"]:disabled {
   box-shadow: 0 0 0 3px rgba(231, 21, 123, 0.12);
 }
 
+.solution-explanation {
+  margin-top: 0.75rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 0.7rem;
+}
+
+.solution-explanation p {
+  margin: 0.35rem 0 0;
+  color: #7c2d12;
+  font-size: 0.9rem;
+}
+
 .attempts-label {
   font-size: 0.85rem;
   color: var(--color-muted);
@@ -443,6 +457,11 @@ input[type="text"]:disabled {
 .solutions-a {
   margin-bottom: 0.5rem;
   color: var(--color-text);
+}
+
+.solutions-explanation {
+  margin-bottom: 0.6rem;
+  color: #374151;
 }
 
 .solutions-textarea {

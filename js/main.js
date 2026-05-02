@@ -154,6 +154,8 @@ function showQuestion() {
   document.getElementById('hint-text-content').textContent = '';
   document.getElementById('solution-box').hidden = true;
   document.getElementById('solution-content').value = '';
+  document.getElementById('solution-explanation').hidden = true;
+  document.getElementById('solution-explanation-content').textContent = '';
   resetCopyButton();
 
   // Hint button
@@ -242,8 +244,21 @@ function submitAnswer() {
 }
 
 function revealSolution(question) {
-  if (!question.solution) return;
-  document.getElementById('solution-content').value = question.solution;
+  if (!question.solution && !question.explanation) return;
+
+  const solutionText = question.solution || 'No query/command saved for this question.';
+  document.getElementById('solution-content').value = solutionText;
+
+  const explanationBox = document.getElementById('solution-explanation');
+  const explanationContent = document.getElementById('solution-explanation-content');
+  if (question.explanation) {
+    explanationContent.textContent = question.explanation;
+    explanationBox.hidden = false;
+  } else {
+    explanationContent.textContent = '';
+    explanationBox.hidden = true;
+  }
+
   document.getElementById('solution-box').hidden = false;
 }
 
@@ -394,10 +409,12 @@ function showAllSolutions() {
 
       const answer = atob(q.answerBase64);
       const queryText = q.solution || 'No query/command saved for this question.';
+      const explanationText = q.explanation || 'No explanation saved for this question.';
 
       item.innerHTML = `
         <p class="solutions-q"><strong>Q${idx + 1}:</strong> ${esc(q.text)}</p>
         <p class="solutions-a"><strong>Answer:</strong> ${esc(answer)}</p>
+        <p class="solutions-explanation"><strong>Why this is correct:</strong> ${esc(explanationText)}</p>
       `;
 
       const textarea = document.createElement('textarea');
