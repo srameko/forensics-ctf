@@ -7,14 +7,16 @@ export const MAX_ATTEMPTS = 3;
 
 /**
  * Compare a user's input against a base64-encoded correct answer.
- * Comparison is case-insensitive and trims surrounding whitespace.
+ * Comparison is case-insensitive and ignores whitespace differences
+ * (e.g. "NTLM v2" matches "NTLMv2" or "ntlm  v2"), since spacing is a
+ * formatting choice, not part of the answer itself.
  * @param {string} input - raw user input
  * @param {string} answerBase64 - btoa(correct answer)
  * @returns {boolean}
  */
 export function checkAnswer(input, answerBase64) {
-  const correct = atob(answerBase64).trim().toLowerCase();
-  return input.trim().toLowerCase() === correct;
+  const normalize = (s) => s.replace(/\s+/g, '').toLowerCase();
+  return normalize(input) === normalize(atob(answerBase64));
 }
 
 /**
