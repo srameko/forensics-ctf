@@ -15,8 +15,11 @@ export const MAX_ATTEMPTS = 3;
  * @returns {boolean}
  */
 export function checkAnswer(input, answerBase64) {
-  const normalize = (s) => s.replace(/\s+/g, '').toLowerCase();
-  return normalize(input) === normalize(atob(answerBase64));
+  const normalize = (s) => s.trim().replace(/\s+/g, ' ').toLowerCase();
+  const correct = normalize(atob(answerBase64));
+  const submitted = normalize(input);
+  return submitted === correct ||
+    (correct === 'ntlm v2' && submitted === 'ntlmv2');
 }
 
 /**
