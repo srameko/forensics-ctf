@@ -35,6 +35,12 @@ describe('checkAnswer', () => {
   it('returns false for empty input against non-empty answer', () => {
     expect(checkAnswer('', btoa('4625'))).toBe(false);
   });
+
+  it('ignores internal whitespace differences', () => {
+    expect(checkAnswer('NTLMv2', btoa('NTLM v2'))).toBe(true);
+    expect(checkAnswer('ntlm v2', btoa('NTLM v2'))).toBe(true);
+    expect(checkAnswer('NTLM  v2', btoa('NTLM v2'))).toBe(true);
+  });
 });
 
 describe('calculateScore', () => {
