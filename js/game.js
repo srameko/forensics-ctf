@@ -7,9 +7,10 @@ export const MAX_ATTEMPTS = 3;
 
 /**
  * Compare a user's input against a base64-encoded correct answer.
- * Comparison is case-insensitive and ignores whitespace differences
- * (e.g. "NTLM v2" matches "NTLMv2" or "ntlm  v2"), since spacing is a
- * formatting choice, not part of the answer itself.
+ * Comparison is case-insensitive, trims surrounding whitespace and collapses
+ * runs of inner whitespace to one space. Spacing is otherwise significant
+ * (e.g. an executable path and its argument must stay separated). The one
+ * alias: when the correct answer is "NTLM v2", "NTLMv2" is accepted too.
  * @param {string} input - raw user input
  * @param {string} answerBase64 - btoa(correct answer)
  * @returns {boolean}
